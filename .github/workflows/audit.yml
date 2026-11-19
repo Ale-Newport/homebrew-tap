@@ -1,0 +1,30 @@
+name: Audit casks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - name: Tap this repository
+        run: |
+          brew tap "${GITHUB_REPOSITORY%%/*}/tap" "https://github.com/${GITHUB_REPOSITORY}"
+      - name: Style and audit
+        run: |
+          brew style --cask "${GITHUB_REPOSITORY%%/*}/tap/toolbox"
+          brew audit --cask --online "${GITHUB_REPOSITORY%%/*}/tap/toolbox"
+      - name: Install, check and uninstall
+        run: |
+          brew install --cask "${GITHUB_REPOSITORY%%/*}/tap/toolbox"
+          test -d /Applications/Toolbox.app
+          lipo -archs /Applications/Toolbox.app/Contents/MacOS/toolbox
+          codesign --verify --deep --strict /Applications/Toolbox.app
+          test -z "$(xattr -p com.apple.quarantine /Applications/Toolbox.app 2>/dev/null)"
+          brew uninstall --cask toolbox
