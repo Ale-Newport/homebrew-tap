@@ -12,15 +12,17 @@ cask "toolbox" do
     strategy :github_latest
   end
 
-  depends_on macos: ">= :big_sur"
+  depends_on :macos
 
   app "Toolbox.app"
 
   # The app is ad-hoc signed (no Developer ID yet), so Gatekeeper would refuse a
   # quarantined copy. This mirrors what the project's own installer does.
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Toolbox.app"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args:           ["-dr", "com.apple.quarantine", "{{appdir}}/Toolbox.app"],
+        writable_paths: ["Toolbox.app"],
+        writable_base:  :appdir
   end
 
   zap trash: [
