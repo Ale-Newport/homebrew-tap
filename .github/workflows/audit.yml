@@ -11,11 +11,15 @@ permissions:
 jobs:
   audit:
     runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
     timeout-minutes: 20
     steps:
       - name: Tap this repository
         run: |
           brew tap "${GITHUB_REPOSITORY%%/*}/tap" "https://github.com/${GITHUB_REPOSITORY}"
+          # Homebrew 7 refuses to load casks from third-party taps until they are trusted.
+          brew trust "${GITHUB_REPOSITORY%%/*}/tap"
       - name: Style and audit
         run: |
           brew style --cask "${GITHUB_REPOSITORY%%/*}/tap/toolbox"
