@@ -1,6 +1,6 @@
 cask "toolbox" do
-  version "0.1.0"
-  sha256 "427b76d3f41b1e01f7d15c6f21bd3ac8d14ff3b5fe21e58b8c0ec68b63deb6ba"
+  version "0.2.0"
+  sha256 "e9da1f3d5e3399c7ae4a59932a5a14f24f6f0600dd6b60eb62b343d19a069386"
 
   url "https://github.com/Ale-Newport/swapIT/releases/download/v#{version}/Toolbox_#{version}_universal.dmg"
   name "Toolbox"
